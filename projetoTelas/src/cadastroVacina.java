@@ -30,7 +30,6 @@ public class cadastroVacina extends JFrame {
 	private JPanel contentPane;
 	private JTextField vacinaField;
 	private JTextField codvField;
-	private JTextField idField;
 
 	/**
 	 * Launch the application.
@@ -58,12 +57,6 @@ public class cadastroVacina extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
-		idField = new JTextField();
-
-		idField.setColumns(10);
-		idField.setBounds(283, 22, 52, 20);
-		contentPane.add(idField);
 
 		// Random num=new Random();
 
@@ -131,8 +124,8 @@ public class cadastroVacina extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int idvacina = 0;
 				String vacina = vacinaField.getText();
-				int periodo = Integer.parseInt((String) periodoBox_1.getSelectedItem());
-				int doses = Integer.parseInt((String) qtdDosesBox_1_1.getSelectedItem());
+				int periodo = (Integer) periodoBox_1.getSelectedItem();
+				int doses = (Integer) qtdDosesBox_1_1.getSelectedItem();
 				int codvacina = Integer.parseInt(JOptionPane.showInputDialog("Digite o código da vacina"));
 				Vacina v = new Vacina(vacina, periodo, doses, idvacina, codvacina);
 				v.setVacina(vacina);
@@ -141,7 +134,7 @@ public class cadastroVacina extends JFrame {
 				v.setCodvacina(codvacina);
 				// idField.setText(Integer.toString(v.getIdvacina()));
 				v.atualizar();
-				// dispose();
+				 dispose();
 
 			}
 		});
@@ -164,7 +157,7 @@ public class cadastroVacina extends JFrame {
 				v.setCodvacina(codvacina);
 				v.inserir();
 				// v.complemento();
-				// dispose();
+				 dispose();
 
 			}
 		});
@@ -178,8 +171,4 @@ public class cadastroVacina extends JFrame {
 		contentPane.add(lblNewLabel);
 	}
 
-	// private int getCodvacina() {
-	// TODO Auto-generated method stub
-	// return 0;
-	// }
 }

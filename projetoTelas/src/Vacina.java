@@ -107,26 +107,19 @@ public class Vacina {
 
 		ArrayList<String> vacinas = new ArrayList<>();
 
-//1: Definir o comando SQL
+
 		String sql = "SELECT nomevacina FROM db_projeto.tb_vacina";
-//2: Abrir uma conexão
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
-//3: Pré compila o comando
 			PreparedStatement ps = c.prepareStatement(sql);
-//4: Executa o comando e guarda
-//o resultado em um ResultSet
 			ResultSet rs = ps.executeQuery();
-//5: itera sobre o resultado
 			while (rs.next()) {
 				vacinas.add(rs.getString("nomevacina"));
-			} // while
+			} 
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		// converte ArrayList em []
 		return vacinas.toArray(new String[vacinas.size()]);
 	}
 

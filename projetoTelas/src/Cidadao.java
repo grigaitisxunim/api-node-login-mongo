@@ -11,15 +11,15 @@ import javax.swing.JOptionPane;
 public class Cidadao {
 	private String sus;
 	private String nome;
-	private int telefone;
+	private String telefone;
 	private String email;
 	private String cpf;
 	private String dataDeNascimento;
 	DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-	private carteiraVacina carteiraVacina;
+	private TelaCarteiraVacinacao carteiraVacina;
 
 
-	public Cidadao(String sus,String nome, int telefone, String email, String cpf, String dataDeNacimento) {
+	public Cidadao(String sus,String nome, String telefone, String email, String cpf, String dataDeNacimento) {
 		super();
 		this.sus=sus;
 		this.nome = nome;
@@ -39,11 +39,11 @@ public class Cidadao {
 		this.nome = nome;
 	}
 
-	public int getTelefone() {
+	public String getTelefone() {
 		return telefone;
 	}
 
-	public void setTelefone(int telefone) {
+	public void setTelefone(String telefone) {
 		this.telefone = telefone;
 	}
 
@@ -64,12 +64,12 @@ public class Cidadao {
 	}
 
 	
-	public carteiraVacina getcarteiraVacina() {
+	public TelaCarteiraVacinacao getcarteiraVacina() {
 		return carteiraVacina;
 	}
 	
 	
-	public void setCarteiraVacina(carteiraVacina carteiraVacina) {
+	public void setCarteiraVacina(TelaCarteiraVacinacao carteiraVacina) {
 		this.carteiraVacina = carteiraVacina;
 	}
 	
@@ -104,7 +104,7 @@ public class Cidadao {
 			ps.setString(2, nome);
 			ps.setString(3,dataDeNascimento);
 			ps.setString(4, cpf);
-			ps.setInt(5, telefone);
+			ps.setString(5, telefone);
 			ps.setString(6, email);
 			ps.execute();
 		} catch (Exception e) {
@@ -120,7 +120,7 @@ public class Cidadao {
 			ps.setString(1, nome);
 			ps.setString(2, dataDeNascimento);
 			ps.setString(3, cpf);
-			ps.setInt(4, telefone);
+			ps.setString(4, telefone);
 			ps.setString(5, email); 
 			ps.setString(6, sus);
 			ps.execute();
@@ -154,7 +154,7 @@ public class Cidadao {
 			ps.setString(1,nome);
 			ps.setString(2, dataDeNascimento);
 			ps.setString(3, cpf);
-			ps.setInt(4,telefone);
+			ps.setString(4,telefone);
 			ps.setString(5, email);
 			ps.setString(6, sus);
 			//5: Executa o comando

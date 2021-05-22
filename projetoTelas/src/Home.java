@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.SystemColor;
 import javax.swing.UIManager;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -47,7 +48,7 @@ public class Home {
 		frame.setBounds(100, 100, 627, 395);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-
+	
 		JButton btnNewButton = new JButton("VACINA");
 		btnNewButton.setFont(new Font("Arial", Font.BOLD, 12));
 		btnNewButton.setBackground(SystemColor.textHighlightText);
@@ -101,9 +102,9 @@ public class Home {
 		btnCarteiraDeVacinao_1.setBackground(SystemColor.textHighlightText);
 		btnCarteiraDeVacinao_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				carteiraVacina vacina = new carteiraVacina();
-				vacina.setVisible(true);
-				vacina.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				MenuCarteira frame = new MenuCarteira();
+				frame.setVisible(true);
+				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 			}
 		});

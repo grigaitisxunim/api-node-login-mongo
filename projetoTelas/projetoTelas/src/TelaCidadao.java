@@ -110,14 +110,14 @@ public class TelaCidadao extends JFrame {
 		Cadastrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				//teste data System.out.println(String.format("teste" + txtData.getValue()));
+				// teste data System.out.println(String.format("teste" + txtData.getValue()));
 
-				String sus =susField.getText();
-				String nome = nomeField.getText();
-				int telefone = Integer.parseInt(telefoneField.getText());
-				String email = emailField.getText();
-				String cpf = cpfField.getText();
+				String sus = susField.getText();
+				String nome = nomeField.getText();		
 				String dataDeNacimento = txtData.getValue().toString();
+				String cpf = cpfField.getText();
+				String telefone = (telefoneField.getText());
+				String email = emailField.getText();
 				Cidadao p = new Cidadao(sus, nome, telefone, email, cpf, dataDeNacimento);
 				p.setSus(sus);
 				p.setNome(nome);
@@ -126,24 +126,25 @@ public class TelaCidadao extends JFrame {
 				p.setCpf(cpf);
 				p.setDataDeNascimento(dataDeNacimento);
 				p.inserir();
-				String menu = "1-Cadastrar Carteira de vacinaï¿½ï¿½o\n0-Sair";
+				String menu = "Cidadão " + nome
+						+ " cadastrado com sucesso!\n 1-Cadastrar Carteira de vacinação\n2-Sair";
 				int op;
 				do {
 					op = Integer.parseInt(JOptionPane.showInputDialog(menu));
 					switch (op) {
 					case 1: {
 						dispose();
-						carteiraVacina vacina = new carteiraVacina();
+						TelaCarteiraVacinacao vacina = new TelaCarteiraVacinacao();
 						vacina.setVisible(true);
 						vacina.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
 						break;
 					}
-					case 0:
+					case 2:
 						dispose();
 						break;
+						default:
 					}
-				} while (op != 1);
+				} while (op != 2);
 			}
 		});
 
@@ -167,9 +168,9 @@ public class TelaCidadao extends JFrame {
 		Atualizar.setBackground(SystemColor.textHighlightText);
 		Atualizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String sus =JOptionPane.showInputDialog("Carteira do Sus?");
+				String sus = JOptionPane.showInputDialog("Carteira do Sus?");
 				String nome = nomeField.getText();
-				int telefone = Integer.parseInt(telefoneField.getText());
+				String telefone = telefoneField.getText();
 				String email = emailField.getText();
 				String cpf = cpfField.getText();
 				String dataDeNacimento = txtData.getValue().toString();
@@ -206,14 +207,19 @@ public class TelaCidadao extends JFrame {
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(txtData.getValue());
-				String sus = susField.getText();
+				String sus = String.valueOf(JOptionPane.showInputDialog("Carteira do sus?"));
 				String nome = nomeField.getText();
-				int telefone = Integer.parseInt(telefoneField.getText());
+				String telefone = telefoneField.getText();
 				String email = emailField.getText();
 				String cpf = cpfField.getText();
 				String dataDeNacimento = txtData.getValue().toString();
 				Cidadao p = new Cidadao(sus, nome, telefone, email, cpf, dataDeNacimento);
 				p.setSus(sus);
+				p.setNome(nome);
+				p.setTelefone(telefone);
+				p.setEmail(email);
+				p.setCpf(cpf);
+				p.setDataDeNascimento(dataDeNacimento);
 				p.consultar();
 				dispose();
 
@@ -228,16 +234,18 @@ public class TelaCidadao extends JFrame {
 		Apagar.setBackground(SystemColor.textHighlightText);
 		Apagar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String sus =JOptionPane.showInputDialog("Carteira do Sus?");
-				String nome = nomeField.getText();
-				int telefone = Integer.parseInt((String)telefoneField.getText());
-				String email = emailField.getText();
-				String cpf = cpfField.getText();
-				String dataDeNacimento = txtData.getValue().toString();
+				String sus = JOptionPane.showInputDialog("Carteira do Sus?");
+				String nome ="";
+				String telefone = "";
+				String email = "";
+				String cpf = "";
+				String dataDeNacimento = "";
 				Cidadao p = new Cidadao(sus, nome, telefone, email, cpf, dataDeNacimento);
 				p.setSus(sus);
 				p.apagar();
+				JOptionPane.showMessageDialog(null, "O cidadão portador do numero do SUS " + sus + " foi excluido do sistema!");
 				dispose();
+				
 			}
 
 		});
@@ -248,7 +256,7 @@ public class TelaCidadao extends JFrame {
 		JLabel lblNewLabel_6 = new JLabel("New label");
 		lblNewLabel_6.setBackground(SystemColor.textHighlightText);
 		lblNewLabel_6.setIcon(
-				new ImageIcon("C:\\Users\\lu99-\\eclipse-workspace\\icons\\fundo-abstrato-colorido_23-2148807053.jpg"));
+				new ImageIcon(TelaCidadao.class.getResource("/icons/fundo-abstrato-colorido_23-2148807053.jpg")));
 		lblNewLabel_6.setBounds(0, 0, 622, 362);
 		contentPane.add(lblNewLabel_6);
 	}

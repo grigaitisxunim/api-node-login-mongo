@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.SystemColor;
 import javax.swing.UIManager;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -14,7 +15,6 @@ import javax.swing.ImageIcon;
 public class Home {
 
 	private JFrame frame;
-
 
 	/**
 	 * Launch the application.
@@ -48,7 +48,7 @@ public class Home {
 		frame.setBounds(100, 100, 627, 395);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
+	
 		JButton btnNewButton = new JButton("VACINA");
 		btnNewButton.setFont(new Font("Arial", Font.BOLD, 12));
 		btnNewButton.setBackground(SystemColor.textHighlightText);
@@ -59,7 +59,7 @@ public class Home {
 				cvacina.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			}
 		});
-		
+
 		JButton btnConsulta = new JButton("CONSULTA CIDAD\u00C3O");
 		btnConsulta.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -74,7 +74,7 @@ public class Home {
 		frame.getContentPane().add(btnConsulta);
 		btnNewButton.setBounds(206, 131, 208, 30);
 		frame.getContentPane().add(btnNewButton);
-		
+
 		JButton cidadao = new JButton("CIDAD\u00C3O");
 		cidadao.setIcon(null);
 		cidadao.setFont(new Font("Arial", Font.BOLD, 12));
@@ -82,42 +82,39 @@ public class Home {
 		cidadao.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				TelaCidadao cadastroCidadao = new TelaCidadao();
-				cadastroCidadao .setVisible(true);
-				cadastroCidadao .setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				
-				
+				cadastroCidadao.setVisible(true);
+				cadastroCidadao.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
 			}
-			
+
 		});
 		cidadao.setBounds(206, 77, 208, 30);
 		frame.getContentPane().add(cidadao);
-		
+
 		JButton btnRel = new JButton("RELAT\u00D3RIO");
 		btnRel.setFont(new Font("Arial", Font.BOLD, 12));
 		btnRel.setBackground(SystemColor.textHighlightText);
 		btnRel.setBounds(206, 232, 208, 30);
 		frame.getContentPane().add(btnRel);
-		
-		
+
 		JButton btnCarteiraDeVacinao_1 = new JButton("CARTEIRA DE VACINA\u00C7\u00C3O");
 		btnCarteiraDeVacinao_1.setFont(new Font("Arial", Font.BOLD, 12));
 		btnCarteiraDeVacinao_1.setBackground(SystemColor.textHighlightText);
 		btnCarteiraDeVacinao_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				carteiraVacina vacina = new carteiraVacina();
-				vacina.setVisible(true);
-				vacina.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				MenuCarteira frame = new MenuCarteira();
+				frame.setVisible(true);
+				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 			}
 		});
 		btnCarteiraDeVacinao_1.setBounds(206, 182, 208, 30);
 		frame.getContentPane().add(btnCarteiraDeVacinao_1);
-		
+
 		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\lu99-\\eclipse-workspace\\icons\\fundo-abstrato-colorido_23-2148807053.jpg"));
+		lblNewLabel.setIcon(new ImageIcon(Home.class.getResource("/icons/fundo-abstrato-colorido_23-2148807053.jpg")));
 		lblNewLabel.setBounds(0, 0, 629, 356);
 		frame.getContentPane().add(lblNewLabel);
-		
-		
+
 	}
 }

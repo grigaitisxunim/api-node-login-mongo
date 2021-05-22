@@ -11,15 +11,15 @@ import javax.swing.JOptionPane;
 public class Cidadao {
 	private String sus;
 	private String nome;
-	private int telefone;
+	private String telefone;
 	private String email;
 	private String cpf;
 	private String dataDeNascimento;
 	DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-	private carteiraVacina carteiraVacina;
+	private TelaCarteiraVacinacao carteiraVacina;
 
 
-	public Cidadao(String sus,String nome, int telefone, String email, String cpf, String dataDeNacimento) {
+	public Cidadao(String sus,String nome, String telefone, String email, String cpf, String dataDeNacimento) {
 		super();
 		this.sus=sus;
 		this.nome = nome;
@@ -39,11 +39,11 @@ public class Cidadao {
 		this.nome = nome;
 	}
 
-	public int getTelefone() {
+	public String getTelefone() {
 		return telefone;
 	}
 
-	public void setTelefone(int telefone) {
+	public void setTelefone(String telefone) {
 		this.telefone = telefone;
 	}
 
@@ -64,12 +64,12 @@ public class Cidadao {
 	}
 
 	
-	public carteiraVacina getcarteiraVacina() {
+	public TelaCarteiraVacinacao getcarteiraVacina() {
 		return carteiraVacina;
 	}
 	
 	
-	public void setCarteiraVacina(carteiraVacina carteiraVacina) {
+	public void setCarteiraVacina(TelaCarteiraVacinacao carteiraVacina) {
 		this.carteiraVacina = carteiraVacina;
 	}
 	
@@ -96,16 +96,16 @@ public class Cidadao {
 	
 
 	public void inserir() {
-		String sql = "INSERT INTO tb_cidadao(nsus, nome, fone, email, cpfrne, datanasc) VALUES (?, ?, ?, ?, ?,?)";
+		String sql = "INSERT INTO tb_cidadao(nsus, nome, datanasc, cpfrne, fone, email) VALUES (?, ?, ?, ?, ?, ?)";
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setString(1, sus);
 			ps.setString(2, nome);
-			ps.setInt(3, telefone);
-			ps.setString(4, email);
-			ps.setString(5, cpf);
-			ps.setString(6,dataDeNascimento);
+			ps.setString(3,dataDeNascimento);
+			ps.setString(4, cpf);
+			ps.setString(5, telefone);
+			ps.setString(6, email);
 			ps.execute();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -113,15 +113,15 @@ public class Cidadao {
 	}
 
 	public void atualizar() {
-		String sql = "UPDATE tb_cidadao SET nome = ?, fone = ?, email = ?, cpfrne = ?, datanasc = ? WHERE nsus = ?";
+		String sql = "UPDATE tb_cidadao SET nome = ?, datanasc = ?, cpfrne = ? fone = ?, email = ?,  WHERE nsus = ?";
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setString(1, nome);
-			ps.setInt(2, telefone);
-			ps.setString(3, email);
-			ps.setString(4, cpf);
-			ps.setString(5,dataDeNascimento); 
+			ps.setString(2, dataDeNascimento);
+			ps.setString(3, cpf);
+			ps.setString(4, telefone);
+			ps.setString(5, email); 
 			ps.setString(6, sus);
 			ps.execute();
 		} catch (Exception e) {
@@ -144,14 +144,19 @@ public class Cidadao {
 	public void consultar() {
 		
 			//1: Definir o comando SQL
-			String sql = "SELECT  nome ,fone,email,cpfrne,datanasc FROM db_projeto.tb_cidadao  WHERE nsus=?";
+			String sql = "SELECT  nome, datanasc, cpfrne ,fone, email FROM db_projeto.tb_cidadao  WHERE nsus=?";
 			//2: Abrir uma conexão
 			ConnectionFactory factory = new ConnectionFactory();
 			try (Connection c = factory.obtemConexao()){
 			//3: Pré compila o comando
 			PreparedStatement ps = c.prepareStatement(sql);
 			//4: Preenche os dados faltante
-			ps.setString(7, sus);
+			ps.setString(1,nome);
+			ps.setString(2, dataDeNascimento);
+			ps.setString(3, cpf);
+			ps.setString(4,telefone);
+			ps.setString(5, email);
+			ps.setString(6, sus);
 			//5: Executa o comando
 			ps.execute();
 			}
@@ -185,13 +190,12 @@ public class Cidadao {
 			PreparedStatement ps = c.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				String cpf = rs.getString("cpfrne");
 				String nome = rs.getString("nome");
+				String dataDeNascimento = rs.getString("datanasc");
+				String cpf = rs.getString("cpfrne");
 				int telefone = rs.getInt("fone");
 				String email = rs.getString("email");
-				String dataDeNascimento = rs.getString("datanasc");
-				String aux = String.format("cpfrne: %d, nome: %s, fone: %s, email: %s", cpf, nome, telefone, email,
-						dataDeNascimento);
+				String aux = String.format("nome: %d, datanasc: %s, fone: %s, email: %s", nome, dataDeNascimento, telefone, email);
 				JOptionPane.showMessageDialog(null, aux);
 			}
 		} catch (Exception e) {

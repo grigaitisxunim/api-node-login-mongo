@@ -56,21 +56,25 @@ public class ConsultaCidadao extends JFrame {
 		contentPane.setLayout(null);
 		
 		susField = new JTextField();
+		susField.setEditable(false);
 		susField.setColumns(10);
 		susField.setBounds(265, 65, 158, 20);
 		contentPane.add(susField);
 		
 		cpfField = new JTextField();
+		cpfField.setEditable(false);
 		cpfField.setColumns(10);
 		cpfField.setBounds(265, 220, 161, 20);
 		contentPane.add(cpfField);
 		
 		telefoneField = new JTextField();
+		telefoneField.setEditable(false);
 		telefoneField.setColumns(10);
 		telefoneField.setBounds(265, 189, 161, 20);
 		contentPane.add(telefoneField);
 		
 		emailField = new JTextField();
+		emailField.setEditable(false);
 		emailField.setColumns(10);
 		emailField.setBounds(265, 158, 158, 20);
 		contentPane.add(emailField);
@@ -82,6 +86,7 @@ public class ConsultaCidadao extends JFrame {
 		txtData.setColumns(10);
 		
 		nomeField = new JTextField();
+		nomeField.setEditable(false);
 		nomeField.setColumns(10);
 		nomeField.setBounds(267, 96, 158, 20);
 		contentPane.add(nomeField);
@@ -119,7 +124,7 @@ public class ConsultaCidadao extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String sus =JOptionPane.showInputDialog("Qual o n�mero do sus?");
 				String nome = nomeField.getText();
-				int telefone = Integer.parseInt(telefoneField.getText());
+				String telefone = telefoneField.getText();
 				String email = emailField.getText();
 				String cpf = cpfField.getText();
 				String dataDeNacimento = txtData.getText();
@@ -130,7 +135,7 @@ public class ConsultaCidadao extends JFrame {
 			}
 		});
 		button.setFont(new Font("Arial", Font.BOLD, 12));
-		button.setBounds(253, 279, 170, 31);
+		button.setBounds(230, 279, 170, 31);
 		contentPane.add(button);
 		
 		
@@ -148,7 +153,7 @@ public class ConsultaCidadao extends JFrame {
 		contentPane.add(lblNewLabel_2);
 		
 		JLabel btnConsultar = new JLabel("consultar");
-		btnConsultar.setIcon(new ImageIcon("C:\\Users\\lu99-\\eclipse-workspace\\projetoTelas\\icons\\fundo-abstrato-colorido_23-2148807053.jpg"));
+		btnConsultar.setIcon(new ImageIcon(ConsultaCidadao.class.getResource("/icons/fundo-abstrato-colorido_23-2148807053.jpg")));
 		btnConsultar.setBounds(0, 0, 586, 333);
 		contentPane.add(btnConsultar);
 	}

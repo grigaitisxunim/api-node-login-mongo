@@ -11,16 +11,16 @@ public class Vacina {
 	private int periodo;
 	private int qtdDoses;
 	// public static int id;
-	private static int codvacina;
+	private int codvacina;
 
-	public Vacina(String vacina, int periodo, int qtdDoses, int idvacina, /* int id, */ int codvacina) {
+	public Vacina(String vacina, int periodo, int qtdDoses, int idvacina /* int id, int codvacina */) {
 		super();
 		this.idvacina = idvacina;
 		this.vacina = vacina;
 		this.periodo = periodo;
 		this.qtdDoses = qtdDoses;
 		// this.id = id;
-		this.codvacina = codvacina;
+		// this.codvacina = codvacina;
 
 	}
 
@@ -39,12 +39,6 @@ public class Vacina {
 	public int getIdvacina() {
 		return idvacina;
 	}
-
-	/*
-	 * public int getId() { return id; }
-	 * 
-	 * public void setId(int id) { this.id = id; }
-	 */
 
 	public void setIdvacina(int idvacina) {
 		this.idvacina = idvacina;
@@ -75,38 +69,25 @@ public class Vacina {
 	}
 
 	public void inserir() {
-		String sql = "INSERT INTO tb_vacina(nomevacina, periodo,doses,codvacina) VALUES (?, ?, ?,?)";
+		String sql = "INSERT INTO tb_vacina(nomevacina, periodo,doses) VALUES (?, ?, ?)";
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setString(1, vacina);
 			ps.setInt(2, periodo);
 			ps.setInt(3, qtdDoses);
-			ps.setInt(4, codvacina);
+			// ps.setInt(4, codvacina);
 			ps.execute();
-			JOptionPane.showMessageDialog(null, vacina + " Foi cadastrada! Seu código é " + codvacina);
+			JOptionPane.showMessageDialog(null, "A Vacina " + vacina + " foi cadastrada com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Não foi possivel cadastrar a vacina " + vacina + "!!");
 		}
 	}
-
-	/*
-	 * public void complemento() { String sql2 =
-	 * "SELECT * FROM db_projeto.tb_vacina WHERE nomevacina =?"; ConnectionFactory
-	 * factory = new ConnectionFactory(); try (Connection c =
-	 * factory.obtemConexao()) { PreparedStatement ps = c.prepareStatement(sql2);
-	 * ps.setString(1, vacina); ResultSet rs = ps.executeQuery();
-	 * rs.getInt("codvacina"); JOptionPane.showMessageDialog(null,
-	 * "Vacina cadastrada sei ID é: " + codvacina); } catch (Exception e) {
-	 * e.printStackTrace(); }
-	 * 
-	 * }
-	 */
 
 	public String[] listarVacinas() {
 
 		ArrayList<String> vacinas = new ArrayList<>();
-
 
 		String sql = "SELECT nomevacina FROM db_projeto.tb_vacina";
 		ConnectionFactory factory = new ConnectionFactory();
@@ -115,7 +96,7 @@ public class Vacina {
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				vacinas.add(rs.getString("nomevacina"));
-			} 
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -124,18 +105,19 @@ public class Vacina {
 	}
 
 	public void atualizar() {
-		String sql = "UPDATE db_projeto.tb_vacina SET nomevacina = ?, periodo =?, doses = ? WHERE codvacina= ?";
+		String sql = "UPDATE db_projeto.tb_vacina SET nomevacina = ?, periodo =?, doses = ? WHERE idvacina= ?";
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setString(1, vacina);
 			ps.setInt(2, periodo);
 			ps.setInt(3, qtdDoses);
-			ps.setInt(4, codvacina);
+			ps.setInt(4, idvacina);
 			ps.execute();
-			JOptionPane.showMessageDialog(null, "A vacina" + codvacina + vacina + " foi alterada!");
+			JOptionPane.showMessageDialog(null, "A vacina " + vacina + " foi alterada com sucesso!!");
 		} catch (Exception e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Não foi possivel alterar a vacina " + vacina + "!!");
 		}
 	}
 
@@ -144,30 +126,50 @@ public class Vacina {
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
 			PreparedStatement ps = c.prepareStatement(sql);
-			ps.setString(1, vacina);
+			ps.setInt(1, idvacina);
 			ps.execute();
+			JOptionPane.showMessageDialog(null, "A vacina " + vacina + " foi apagada com sucesso!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Não foi possivel alterar a vacina " + vacina + "!!");
+		}
+	}
+
+	public void listar() {
+		String sql = "SELECT doses, nomevacina, periodo FROM db_projeto.tb_vacina WHERE idvacina = ?";
+		ConnectionFactory factory = new ConnectionFactory();
+		try (Connection c = factory.obtemConexao()) {
+			PreparedStatement ps = c.prepareStatement(sql);
+			ps.setInt(1, idvacina);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				this.qtdDoses = rs.getInt("doses");
+				this.vacina = rs.getString("nomevacina");
+				this.periodo = rs.getInt("periodo");
+				// codvacina = rs.getInt("codvacina");
+
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void listar() {
-		String sql = "SELECT * FROM tb_vacina";
+	public int pesquisarVacina() {
+		String sql = "SELECT idvacina  FROM db_projeto.tb_vacina WHERE nomevacina =?";
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
-
 			PreparedStatement ps = c.prepareStatement(sql);
+			ps.setString(1, vacina);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				String vacina = rs.getString("nomevacina");
-				int periodo = rs.getInt("periodo");
-				int qtdDoses = rs.getInt("doses");
-				String aux = String.format(" nomevaina: %s, periodo: %s, doses: %s", vacina, periodo, qtdDoses);
-				JOptionPane.showMessageDialog(null, aux);
+				idvacina = rs.getInt("idvacina");
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return this.idvacina;
+
 	}
 
 }

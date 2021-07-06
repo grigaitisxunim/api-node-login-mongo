@@ -1,11 +1,13 @@
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Cidadao {
@@ -14,22 +16,34 @@ public class Cidadao {
 	private String telefone;
 	private String email;
 	private String cpf;
-	private String dataDeNascimento;
-	DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	private int idcidadao;
+	private LocalDate dataDeNascimento;
+	private LocalDate dataAtual = LocalDate.now();
+	DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	private TelaCarteiraVacinacao carteiraVacina;
 
+	public Cidadao() {
 
-	public Cidadao(String sus,String nome, String telefone, String email, String cpf, String dataDeNacimento) {
+	}
+
+	public Cidadao(String sus, String nome, String telefone, String email, String cpf, LocalDate dataDeNascimento) {
 		super();
-		this.sus=sus;
+		this.sus = sus;
 		this.nome = nome;
 		this.telefone = telefone;
 		this.email = email;
 		this.cpf = cpf;
-		this.dataDeNascimento = dataDeNacimento;
+		this.dataDeNascimento = dataDeNascimento;
 	}
 
-	
+	public String getSus() {
+		return sus;
+	}
+
+	public void setSus(String sus) {
+		this.sus = sus;
+	}
 
 	public String getNome() {
 		return nome;
@@ -63,37 +77,33 @@ public class Cidadao {
 		this.cpf = cpf;
 	}
 
-	
-	public TelaCarteiraVacinacao getcarteiraVacina() {
+	public TelaCarteiraVacinacao getCarteiraVacina() {
 		return carteiraVacina;
 	}
-	
-	
+
+	public LocalDate getDataDeNascimento() {
+		return dataDeNascimento;
+	}
+
 	public void setCarteiraVacina(TelaCarteiraVacinacao carteiraVacina) {
 		this.carteiraVacina = carteiraVacina;
 	}
-	
-	
 
-	public String getSus() {
-		return sus;
+	public void setDataDeNascimento(LocalDate dataDeNascimento) {
+		this.dataDeNascimento = dataDeNascimento;
 	}
 
-	public void setSus(String sus) {
-		this.sus = sus;
+	public String getDataDeNascimentoFormatado() {
+		return outputFormatter.format(dataDeNascimento);
 	}
-	
-	
-	 public String getDtNascimento(){ 
-		 return dataDeNascimento; 
-		 } 
-		 /** 
-		 * retorna a data formatada “dd/MM/yyyy” 
-		 * @return String  
-		 */ 
-		
 
-	
+	public void setDataDeNascimento(String d) {
+		dataDeNascimento = LocalDate.parse(d, inputFormatter);
+	}
+
+	public String getFormatarData() {
+		return inputFormatter.format(dataAtual);
+	}
 
 	public void inserir() {
 		String sql = "INSERT INTO tb_cidadao(nsus, nome, datanasc, cpfrne, fone, email) VALUES (?, ?, ?, ?, ?, ?)";
@@ -102,104 +112,92 @@ public class Cidadao {
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setString(1, sus);
 			ps.setString(2, nome);
-			ps.setString(3,dataDeNascimento);
+			ps.setDate(3, java.sql.Date.valueOf(dataDeNascimento));
 			ps.setString(4, cpf);
 			ps.setString(5, telefone);
 			ps.setString(6, email);
 			ps.execute();
-		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "O cidadão " + nome + " foi cadastrado com sucesso!!");
+		} catch (SQLException e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Cidadão já existente!!");
 		}
 	}
 
-	public void atualizar() {
-		String sql = "UPDATE tb_cidadao SET nome = ?, datanasc = ?, cpfrne = ? fone = ?, email = ?,  WHERE nsus = ?";
+	public void atualizar() throws SQLException, NullPointerException {
+		//String sql = "UPDATE tb_cidadao  SET nome = ?, datanasc = ?, cpfrne = ?, fone = ?, email = ?, nsus = ? WHERE idcidadao = ?";
+		String sql = "UPDATE tb_cidadao p join tb_carteira c on p.idcidadao=c.idcidadao SET  p.nome = ?, p.datanasc = ?, p.cpfrne = ?, p.fone = ?, p.email = ?, p.nsus = ?, c.nsus =? WHERE p.idcidadao = ?";
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setString(1, nome);
-			ps.setString(2, dataDeNascimento);
+			ps.setDate(2, java.sql.Date.valueOf(dataDeNascimento));
 			ps.setString(3, cpf);
 			ps.setString(4, telefone);
-			ps.setString(5, email); 
+			ps.setString(5, email);
 			ps.setString(6, sus);
+			ps.setString(7, sus);
+			ps.setInt(8, idcidadao);
 			ps.execute();
+			JOptionPane.showMessageDialog(null, "Cidadão " + nome + " atualizado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
+
 		}
 	}
 
-	public void apagar() {
-		String sql = "DELETE FROM tb_cidadao WHERE nsus = ?";
+	public void apagar() throws SQLException, NullPointerException,SQLIntegrityConstraintViolationException {
+		String sql = "DELETE FROM tb_cidadao WHERE idcidadao = ?";
+		ConnectionFactory factory = new ConnectionFactory();
+		try (Connection c = factory.obtemConexao()) {
+			PreparedStatement ps = c.prepareStatement(sql);
+			ps.setInt(1, idcidadao);
+			ps.execute();
+			ConsultaCidadao consultaCidadao = new ConsultaCidadao();
+			consultaCidadao.setVisible(true);
+			consultaCidadao.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			JOptionPane.showMessageDialog(null, "O Cidadão " +nome + " foi apagado com sucesso!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Cidadão já foi vacinado e não pode ser APAGADO!");
+		}
+		
+	}
+
+	public void ConsultarCidadao() throws SQLException, NullPointerException {
+		String sql = "SELECT nome,datanasc,cpfrne,fone,email FROM db_projeto.tb_cidadao WHERE idcidadao = ?;";
+		ConnectionFactory factory = new ConnectionFactory();
+		try (Connection c = factory.obtemConexao()) {
+			PreparedStatement ps = c.prepareStatement(sql);
+			ps.setInt(1, idcidadao);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				this.nome = rs.getString("nome");
+				this.dataDeNascimento = rs.getDate("datanasc").toLocalDate();
+				this.cpf = rs.getString("cpfrne");
+				this.telefone = rs.getString("fone");
+				this.email = rs.getString("email");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+	}
+
+	public int pesquisarIdCidadao() throws SQLException, NullPointerException {// pesquisarIdCidadão
+		String sql = "SELECT idcidadao  FROM db_projeto.tb_cidadao WHERE nsus =?";
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setString(1, sus);
-			ps.execute();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void consultar() {
-		
-			//1: Definir o comando SQL
-			String sql = "SELECT  nome, datanasc, cpfrne ,fone, email FROM db_projeto.tb_cidadao  WHERE nsus=?";
-			//2: Abrir uma conexão
-			ConnectionFactory factory = new ConnectionFactory();
-			try (Connection c = factory.obtemConexao()){
-			//3: Pré compila o comando
-			PreparedStatement ps = c.prepareStatement(sql);
-			//4: Preenche os dados faltante
-			ps.setString(1,nome);
-			ps.setString(2, dataDeNascimento);
-			ps.setString(3, cpf);
-			ps.setString(4,telefone);
-			ps.setString(5, email);
-			ps.setString(6, sus);
-			//5: Executa o comando
-			ps.execute();
-			}
-			catch (Exception e){
-			e.printStackTrace();
-			}
-			}
-
-
-				
-				
-	
-
-	public String getDataDeNascimento() {
-		return dataDeNascimento;
-	}
-
-
-
-	public void setDataDeNascimento(String dataDeNascimento) {
-		this.dataDeNascimento = dataDeNascimento;
-	}
-
-
-
-	public void listar() {
-		String sql = "SELECT * FROM db_projeto.tb_cidadao;";
-		ConnectionFactory factory = new ConnectionFactory();
-		try (Connection c = factory.obtemConexao()) {
-
-			PreparedStatement ps = c.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				String nome = rs.getString("nome");
-				String dataDeNascimento = rs.getString("datanasc");
-				String cpf = rs.getString("cpfrne");
-				int telefone = rs.getInt("fone");
-				String email = rs.getString("email");
-				String aux = String.format("nome: %d, datanasc: %s, fone: %s, email: %s", nome, dataDeNascimento, telefone, email);
-				JOptionPane.showMessageDialog(null, aux);
+				idcidadao = rs.getInt("idcidadao");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return this.idcidadao;
+
 	}
 }

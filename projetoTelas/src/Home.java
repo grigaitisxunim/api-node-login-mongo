@@ -1,20 +1,20 @@
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.SystemColor;
-import javax.swing.UIManager;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.Color;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
 
-public class Home {
+public class Home extends JFrame {
 
-	private JFrame frame;
+	private JPanel contentPane;
 
 	/**
 	 * Launch the application.
@@ -23,8 +23,8 @@ public class Home {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Home window = new Home();
-					window.frame.setVisible(true);
+					Home frame = new Home();
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -33,88 +33,87 @@ public class Home {
 	}
 
 	/**
-	 * Create the application.
+	 * Create the frame.
 	 */
 	public Home() {
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frame = new JFrame();
-		frame.getContentPane().setBackground(UIManager.getColor("InternalFrame.inactiveTitleGradient"));
-		frame.setBounds(100, 100, 627, 395);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-	
-		JButton btnNewButton = new JButton("VACINA");
-		btnNewButton.setFont(new Font("Arial", Font.BOLD, 12));
-		btnNewButton.setBackground(SystemColor.textHighlightText);
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cadastroVacina cvacina = new cadastroVacina();
-				cvacina.setVisible(true);
-				cvacina.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			}
-		});
-
-		JButton btnConsulta = new JButton("CONSULTA CIDAD\u00C3O");
-		btnConsulta.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ConsultaCidadao consultaCidadao = new ConsultaCidadao();
-				consultaCidadao.setVisible(true);
-				consultaCidadao.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			}
-		});
-		btnConsulta.setFont(new Font("Arial", Font.BOLD, 12));
-		btnConsulta.setBackground(Color.WHITE);
-		btnConsulta.setBounds(206, 283, 208, 30);
-		frame.getContentPane().add(btnConsulta);
-		btnNewButton.setBounds(206, 131, 208, 30);
-		frame.getContentPane().add(btnNewButton);
+		setFont(new Font("Arial", Font.BOLD, 14));
+		setTitle("Menu Cidad\u00E3o");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 700, 500);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		this.setLocationRelativeTo(null);
 
 		JButton cidadao = new JButton("CIDAD\u00C3O");
-		cidadao.setIcon(null);
-		cidadao.setFont(new Font("Arial", Font.BOLD, 12));
-		cidadao.setBackground(SystemColor.textHighlightText);
 		cidadao.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TelaCidadao cadastroCidadao = new TelaCidadao();
-				cadastroCidadao.setVisible(true);
-				cadastroCidadao.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+				MenuCidadao frame = new MenuCidadao();
+				frame.setVisible(true);
+				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				dispose();
 			}
-
 		});
-		cidadao.setBounds(206, 77, 208, 30);
-		frame.getContentPane().add(cidadao);
+		cidadao.setIcon(new ImageIcon(Home.class.getResource("/icons/IconeCidadao.png")));
+		cidadao.setForeground(new Color(47, 79, 79));
+		cidadao.setFont(new Font("Dialog", Font.BOLD, 14));
+		cidadao.setBackground(Color.WHITE);
+		cidadao.setBounds(231, 186, 237, 30);
+		contentPane.add(cidadao);
 
-		JButton btnRel = new JButton("RELAT\u00D3RIO");
-		btnRel.setFont(new Font("Arial", Font.BOLD, 12));
-		btnRel.setBackground(SystemColor.textHighlightText);
-		btnRel.setBounds(206, 232, 208, 30);
-		frame.getContentPane().add(btnRel);
+		JButton btnVacina = new JButton("VACINA");
+		btnVacina.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MenuVacina frame = new MenuVacina();
+				frame.setVisible(true);
+				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				dispose();
+			}
+		});
+		btnVacina.setIcon(new ImageIcon(Home.class.getResource("/icons/IcomeVacina.png")));
+		btnVacina.setForeground(new Color(47, 79, 79));
+		btnVacina.setFont(new Font("Dialog", Font.BOLD, 14));
+		btnVacina.setBackground(Color.WHITE);
+		btnVacina.setBounds(231, 235, 237, 30);
+		contentPane.add(btnVacina);
 
-		JButton btnCarteiraDeVacinao_1 = new JButton("CARTEIRA DE VACINA\u00C7\u00C3O");
-		btnCarteiraDeVacinao_1.setFont(new Font("Arial", Font.BOLD, 12));
-		btnCarteiraDeVacinao_1.setBackground(SystemColor.textHighlightText);
-		btnCarteiraDeVacinao_1.addActionListener(new ActionListener() {
+		JButton btnCarteiraDeVacinao = new JButton("CARTEIRA DE VACINA\u00C7\u00C3O");
+		btnCarteiraDeVacinao.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				MenuCarteira frame = new MenuCarteira();
 				frame.setVisible(true);
 				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+				dispose();
 			}
 		});
-		btnCarteiraDeVacinao_1.setBounds(206, 182, 208, 30);
-		frame.getContentPane().add(btnCarteiraDeVacinao_1);
+		btnCarteiraDeVacinao.setIcon(new ImageIcon(Home.class.getResource("/icons/IconeCarteira.png")));
+		btnCarteiraDeVacinao.setForeground(new Color(47, 79, 79));
+		btnCarteiraDeVacinao.setFont(new Font("Dialog", Font.BOLD, 14));
+		btnCarteiraDeVacinao.setBackground(Color.WHITE);
+		btnCarteiraDeVacinao.setBounds(231, 284, 237, 30);
+		contentPane.add(btnCarteiraDeVacinao);
+
+		JButton btnRel = new JButton("RELAT\u00D3RIO");
+		btnRel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				TelaRelatorio frame = new TelaRelatorio();
+				frame.setVisible(true);
+				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				
+			}
+		});
+		btnRel.setIcon(new ImageIcon(Home.class.getResource("/icons/IconeRelatorio.png")));
+		btnRel.setForeground(new Color(47, 79, 79));
+		btnRel.setFont(new Font("Dialog", Font.BOLD, 14));
+		btnRel.setBackground(Color.WHITE);
+		btnRel.setBounds(231, 335, 237, 30);
+		contentPane.add(btnRel);
 
 		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setIcon(new ImageIcon(Home.class.getResource("/icons/fundo-abstrato-colorido_23-2148807053.jpg")));
-		lblNewLabel.setBounds(0, 0, 629, 356);
-		frame.getContentPane().add(lblNewLabel);
-
+		lblNewLabel.setIcon(new ImageIcon(Home.class.getResource("/icons/TelaHome.png")));
+		lblNewLabel.setBounds(0, 0, 684, 461);
+		contentPane.add(lblNewLabel);
 	}
 }

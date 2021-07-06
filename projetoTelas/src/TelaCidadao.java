@@ -1,10 +1,19 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.MaskFormatter;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Calendar;
+import java.awt.event.KeyEvent;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.awt.event.KeyAdapter;
 
 public class TelaCidadao extends JFrame {
 
@@ -14,8 +23,9 @@ public class TelaCidadao extends JFrame {
 	private JTextField telefoneField;
 	private JTextField emailField;
 	private JTextField susField;
-	private JSpinner txtData;
 	protected String title;
+	private JTextField dataDeNascimentoField;
+	static DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	/**
 	 * Launch the application.
@@ -37,227 +47,232 @@ public class TelaCidadao extends JFrame {
 	 * Create the frame.
 	 */
 	public TelaCidadao() {
+		setFont(new Font("Arial", Font.BOLD, 14));
+		setTitle("Cadastro do cidad\u00E3o");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 622, 401);
+		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		this.setLocationRelativeTo(null);
+		Cidadao p = new Cidadao();
 
 		JLabel lblNewLabel = new JLabel("Nome");
 		lblNewLabel.setBackground(SystemColor.textHighlightText);
-		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel.setForeground(new Color(255, 255, 255));
-		lblNewLabel.setBounds(175, 86, 46, 14);
+		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 14));
+		lblNewLabel.setForeground(new Color(47, 79, 79));
+		lblNewLabel.setBounds(214, 177, 121, 23);
 		contentPane.add(lblNewLabel);
 
 		JLabel lblNewLabel_1 = new JLabel("CPF/RNE");
 		lblNewLabel_1.setBackground(SystemColor.textHighlightText);
-		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_1.setForeground(new Color(255, 255, 255));
-		lblNewLabel_1.setBounds(175, 120, 63, 14);
+		lblNewLabel_1.setFont(new Font("Dialog", Font.BOLD, 14));
+		lblNewLabel_1.setForeground(new Color(47, 79, 79));
+		lblNewLabel_1.setBounds(214, 246, 63, 14);
 		contentPane.add(lblNewLabel_1);
 
 		JLabel lblNewLabel_2 = new JLabel("Data de nascimento");
 		lblNewLabel_2.setBackground(SystemColor.textHighlightText);
-		lblNewLabel_2.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_2.setForeground(new Color(255, 255, 255));
-		lblNewLabel_2.setBounds(124, 145, 147, 23);
+		lblNewLabel_2.setFont(new Font("Dialog", Font.BOLD, 14));
+		lblNewLabel_2.setForeground(new Color(47, 79, 79));
+		lblNewLabel_2.setBounds(214, 277, 147, 23);
 		contentPane.add(lblNewLabel_2);
 
 		JLabel lblNewLabel_3 = new JLabel("Telefone");
 		lblNewLabel_3.setBackground(SystemColor.textHighlightText);
-		lblNewLabel_3.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_3.setForeground(new Color(255, 255, 255));
-		lblNewLabel_3.setBounds(160, 187, 78, 14);
+		lblNewLabel_3.setFont(new Font("Dialog", Font.BOLD, 14));
+		lblNewLabel_3.setForeground(new Color(47, 79, 79));
+		lblNewLabel_3.setBounds(214, 311, 78, 14);
 		contentPane.add(lblNewLabel_3);
 
 		JLabel lblNewLabel_4 = new JLabel("E-mail");
 		lblNewLabel_4.setBackground(SystemColor.textHighlightText);
-		lblNewLabel_4.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_4.setForeground(new Color(255, 255, 255));
-		lblNewLabel_4.setBounds(175, 223, 46, 14);
+		lblNewLabel_4.setFont(new Font("Dialog", Font.BOLD, 14));
+		lblNewLabel_4.setForeground(new Color(47, 79, 79));
+		lblNewLabel_4.setBounds(214, 352, 46, 14);
 		contentPane.add(lblNewLabel_4);
+		
+		MaskFormatter mascaraSus = null;
+        MaskFormatter mascaraTel = null;
+        MaskFormatter mascaraCpf = null;
+        MaskFormatter mascaraData = null;
+
+        try{
+               mascaraSus = new MaskFormatter("###############");
+               mascaraTel = new MaskFormatter("(##)####-####");
+               mascaraCpf = new MaskFormatter("###.###.###-##");
+               mascaraData = new MaskFormatter("##/##/####");
+               mascaraTel.setPlaceholderCharacter('_');
+               mascaraCpf.setPlaceholderCharacter('_');
+        }
+        catch(ParseException excp) {
+               System.err.println("Erro na formatação: " + excp.getMessage());
+               System.exit(-1);
+        }
 
 		nomeField = new JTextField();
-		nomeField.setBounds(253, 83, 158, 20);
-		contentPane.add(nomeField);
-		nomeField.setColumns(10);
+		nomeField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String caracteres = "0987654321@!#&*()+$%-=[]:><,?|^~´`¨{};'";
+				if (caracteres.contains(e.getKeyChar() + "")) {
+					e.consume();
+				}
+			}
+		});
 
-		cpfField = new JTextField();
+		nomeField.setBounds(327, 180, 158, 20);
+		nomeField.setColumns(10);
+		contentPane.add(nomeField);
+
+		cpfField = new JFormattedTextField(mascaraCpf);
+		cpfField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String caracteres = "0987654321";
+				if (!caracteres.contains(e.getKeyChar() + "")) {
+					e.consume();
+				}
+			}
+		});
+
 		cpfField.setColumns(10);
-		cpfField.setBounds(253, 117, 158, 20);
+		cpfField.setBounds(327, 245, 158, 20);
 		contentPane.add(cpfField);
 
-		telefoneField = new JTextField();
+		telefoneField = new JFormattedTextField(mascaraTel);
+		telefoneField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String caracteres = "0987654321";
+				if (!caracteres.contains(e.getKeyChar() + "")) {
+					e.consume();
+				}
+			}
+		});
+
 		telefoneField.setColumns(10);
-		telefoneField.setBounds(253, 185, 158, 20);
+		telefoneField.setBounds(327, 313, 158, 20);
 		contentPane.add(telefoneField);
 
 		emailField = new JTextField();
+		String caracteres = "!#&*()+$%-=[]:><,?|^~´`¨{};'";
+		emailField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (caracteres.contains(e.getKeyChar() + "")) {
+					e.consume();
+				}
+			}
+		});
+
 		emailField.setColumns(10);
-		emailField.setBounds(253, 223, 158, 20);
+		emailField.setBounds(327, 351, 158, 20);
 		contentPane.add(emailField);
 
-		txtData = new JSpinner(new SpinnerDateModel(new Date(), null, null, Calendar.MONTH));
-		JSpinner.DateEditor editor = new JSpinner.DateEditor(txtData, "dd/MM/yy");
-		txtData.setEditor(editor);
-		txtData.setBounds(281, 147, 117, 20);
-		contentPane.add(txtData);
+		dataDeNascimentoField = new JFormattedTextField(mascaraData);
+		dataDeNascimentoField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String caracteres = "0987654321/";
+				if (!caracteres.contains(e.getKeyChar() + "")) {
+					e.consume();
+				}
+			}
+		});
+		dataDeNascimentoField.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis())));
+		dataDeNascimentoField.setBounds(368, 278, 117, 20);
+		dataDeNascimentoField.setColumns(10);
+		contentPane.add(dataDeNascimentoField);
 
-		Button Cadastrar = new Button("Cadastrar");
-		Cadastrar.setFont(new Font("Arial", Font.BOLD, 12));
-		Cadastrar.addActionListener(new ActionListener() {
+		JButton btnCadastrarVacina = new JButton("Cadastrar");
+		btnCadastrarVacina.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				// teste data System.out.println(String.format("teste" + txtData.getValue()));
-
-				String sus = susField.getText();
-				String nome = nomeField.getText();		
-				String dataDeNacimento = txtData.getValue().toString();
-				String cpf = cpfField.getText();
-				String telefone = (telefoneField.getText());
-				String email = emailField.getText();
-				Cidadao p = new Cidadao(sus, nome, telefone, email, cpf, dataDeNacimento);
-				p.setSus(sus);
-				p.setNome(nome);
-				p.setTelefone(telefone);
-				p.setEmail(email);
-				p.setCpf(cpf);
-				p.setDataDeNascimento(dataDeNacimento);
-				p.inserir();
-				String menu = "Cidadão " + nome
-						+ " cadastrado com sucesso!\n 1-Cadastrar Carteira de vacinação\n2-Sair";
-				int op;
-				do {
-					op = Integer.parseInt(JOptionPane.showInputDialog(menu));
-					switch (op) {
-					case 1: {
-						dispose();
-						TelaCarteiraVacinacao vacina = new TelaCarteiraVacinacao();
-						vacina.setVisible(true);
-						vacina.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-						break;
-					}
-					case 2:
-						dispose();
-						break;
-						default:
-					}
-				} while (op != 2);
+				if (susField.getText().equals("               ") || susField.getText().length() != 15) {
+					JOptionPane.showMessageDialog(null, "Campo SUS não preenchido ou menor que 15 dígitos!");
+				} else if (nomeField.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo nome não preenchido");
+				} else if (dataDeNascimentoField.getText().equals("  /  /    ")
+						|| dataDeNascimentoField.getText().equals(p.getFormatarData())) {
+					JOptionPane.showMessageDialog(null, "Campo data de nascimento não preenchido");
+				} else if (cpfField.getText().equals("___.___.___-__") || cpfField.getText().length() != 14) {
+					JOptionPane.showMessageDialog(null, "Campo CPF não preenchido ou incompleto");
+				} else if (telefoneField.getText().equals("(__)____-____") || telefoneField.getText().length() < 13 || telefoneField.getText().length() > 15) {
+					JOptionPane.showMessageDialog(null, "Campo telefone não preenchido");
+				} else if (emailField.getText().isEmpty() || emailField.getText().equals(caracteres)) {
+					JOptionPane.showMessageDialog(null, "Campo e-mail em branco ou com caracter inválido");
+				} else {
+					String sus = susField.getText();
+					String nome = nomeField.getText();
+					String dataDeNascimento = dataDeNascimentoField.getText();
+					// System.out.println(dataDeNascimento);
+					String cpf = cpfField.getText();
+					String telefone = telefoneField.getText();
+					String email = emailField.getText();
+					p.setSus(sus);
+					p.setNome(nome);
+					p.setDataDeNascimento(dataDeNascimento);
+					p.setTelefone(telefone);
+					p.setEmail(email);
+					p.setCpf(cpf);
+					p.inserir();
+					TelaCidadao cadastroCidadao = new TelaCidadao();
+					cadastroCidadao.setVisible(true);
+					cadastroCidadao.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					dispose();
+					
+				}
 			}
 		});
 
-		Cadastrar.setBounds(483, 298, 84, 22);
-		contentPane.add(Cadastrar);
+		btnCadastrarVacina.setForeground(new Color(47, 79, 79));
+		btnCadastrarVacina.setFont(new Font("Dialog", Font.BOLD, 14));
+		btnCadastrarVacina.setBackground(Color.WHITE);
+		btnCadastrarVacina.setBounds(389, 411, 140, 27);
+		contentPane.add(btnCadastrarVacina);
 
-		Button button_1 = new Button("Sair");
-		button_1.setBackground(UIManager.getColor("Button.background"));
-		button_1.addActionListener(new ActionListener() {
+		JButton sair = new JButton("Sair");
+		sair.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				TelaCidadao.this.dispose();
+				MenuCidadao frame = new MenuCidadao();
+				frame.setVisible(true);
+				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			}
 		});
-		button_1.setFont(new Font("Arial", Font.BOLD, 12));
-		button_1.setBounds(143, 298, 70, 22);
-		contentPane.add(button_1);
-
-		Button Atualizar = new Button("Atualizar");
-		Atualizar.setActionCommand("");
-		Atualizar.setFont(new Font("Arial", Font.BOLD, 12));
-		Atualizar.setBackground(SystemColor.textHighlightText);
-		Atualizar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String sus = JOptionPane.showInputDialog("Carteira do Sus?");
-				String nome = nomeField.getText();
-				String telefone = telefoneField.getText();
-				String email = emailField.getText();
-				String cpf = cpfField.getText();
-				String dataDeNacimento = txtData.getValue().toString();
-				Cidadao p = new Cidadao(sus, nome, telefone, email, cpf, dataDeNacimento);
-				p.setSus(sus);
-				p.setNome(nome);
-				p.setTelefone(telefone);
-				p.setEmail(email);
-				p.setCpf(cpf);
-				p.setDataDeNascimento(dataDeNacimento);
-				p.atualizar();
-				dispose();
-
-			}
-		});
-		Atualizar.setBounds(40, 298, 70, 22);
-		contentPane.add(Atualizar);
+		sair.setForeground(new Color(47, 79, 79));
+		sair.setFont(new Font("Dialog", Font.BOLD, 14));
+		sair.setBackground(Color.WHITE);
+		sair.setBounds(177, 411, 140, 27);
+		contentPane.add(sair);
 
 		JLabel lblNewLabel_5 = new JLabel("Carteira Sus");
 		lblNewLabel_5.setBackground(SystemColor.textHighlightText);
-		lblNewLabel_5.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_5.setForeground(new Color(255, 255, 255));
-		lblNewLabel_5.setBounds(124, 51, 121, 23);
+		lblNewLabel_5.setFont(new Font("Dialog", Font.BOLD, 14));
+		lblNewLabel_5.setForeground(new Color(47, 79, 79));
+		lblNewLabel_5.setBounds(214, 212, 103, 14);
 		contentPane.add(lblNewLabel_5);
 
-		susField = new JTextField();
+		susField = new JFormattedTextField(mascaraSus);
+		susField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String caracteres = "0987654321";
+				if (!caracteres.contains(e.getKeyChar() + "")) {
+					e.consume();
+				}
+			}
+		});
+
 		susField.setColumns(10);
-		susField.setBounds(253, 52, 158, 20);
+		susField.setBounds(327, 211, 158, 20);
 		contentPane.add(susField);
-
-		Button button_2 = new Button("Consultar");
-		button_2.setFont(new Font("Arial", Font.BOLD, 12));
-		button_2.setBackground(SystemColor.textHighlightText);
-		button_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println(txtData.getValue());
-				String sus = String.valueOf(JOptionPane.showInputDialog("Carteira do sus?"));
-				String nome = nomeField.getText();
-				String telefone = telefoneField.getText();
-				String email = emailField.getText();
-				String cpf = cpfField.getText();
-				String dataDeNacimento = txtData.getValue().toString();
-				Cidadao p = new Cidadao(sus, nome, telefone, email, cpf, dataDeNacimento);
-				p.setSus(sus);
-				p.setNome(nome);
-				p.setTelefone(telefone);
-				p.setEmail(email);
-				p.setCpf(cpf);
-				p.setDataDeNascimento(dataDeNacimento);
-				p.consultar();
-				dispose();
-
-			}
-		});
-		button_2.setBounds(379, 298, 70, 22);
-		contentPane.add(button_2);
-
-		JButton Apagar = new JButton("Apagar");
-		Apagar.setBackground(UIManager.getColor("Button.background"));
-		Apagar.setFont(new Font("Arial", Font.BOLD, 12));
-		Apagar.setBackground(SystemColor.textHighlightText);
-		Apagar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String sus = JOptionPane.showInputDialog("Carteira do Sus?");
-				String nome ="";
-				String telefone = "";
-				String email = "";
-				String cpf = "";
-				String dataDeNacimento = "";
-				Cidadao p = new Cidadao(sus, nome, telefone, email, cpf, dataDeNacimento);
-				p.setSus(sus);
-				p.apagar();
-				JOptionPane.showMessageDialog(null, "O cidadão portador do numero do SUS " + sus + " foi excluido do sistema!");
-				dispose();
-				
-			}
-
-		});
-
-		Apagar.setBounds(252, 297, 89, 23);
-		contentPane.add(Apagar);
 
 		JLabel lblNewLabel_6 = new JLabel("New label");
 		lblNewLabel_6.setBackground(SystemColor.textHighlightText);
-		lblNewLabel_6.setIcon(
-				new ImageIcon(TelaCidadao.class.getResource("/icons/fundo-abstrato-colorido_23-2148807053.jpg")));
-		lblNewLabel_6.setBounds(0, 0, 622, 362);
+		lblNewLabel_6.setIcon(new ImageIcon(TelaCidadao.class.getResource("/icons/TelaCadastroCidadao.png")));
+		lblNewLabel_6.setBounds(0, 0, 684, 461);
 		contentPane.add(lblNewLabel_6);
 	}
 }

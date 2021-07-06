@@ -2,29 +2,31 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class Carteira {
+public class Carteira extends Cidadao{
 
 	private String vacina;
 	private int qtdDoses;
-	private String primeiraDose;
-	private String segundaDose;
+	private LocalDate primeiraDose;
+	private LocalDate segundaDose;
 	private int idcidadao;
 	private String sus;
-	public int aux;
-	public int aux1;
+	public int idcarteira;
 	private int idvacina;
+	DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	
 
 	public Carteira() {
 
 	}
 
-	public Carteira(String vacina, int periodo, int qtdDoses, String primeiraDose, String segundaDose, int idcidadao,
+	public Carteira(String vacina, int periodo, int qtdDoses, LocalDate primeiraDose, LocalDate segundaDose, int idcidadao,
 			String sus) {
 		super();
 		this.vacina = vacina;
@@ -35,12 +37,13 @@ public class Carteira {
 		this.sus = sus;
 	}
 
-	public int getAux1() {
-		return aux1;
+
+	public int getIdcarteira() {
+		return idcarteira;
 	}
 
-	public void setAux1(int aux1) {
-		this.aux1 = aux1;
+	public void setIdcarteira(int idcarteira) {
+		this.idcarteira = idcarteira;
 	}
 
 	public int getIdvacina() {
@@ -49,14 +52,6 @@ public class Carteira {
 
 	public void setIdvacina(int idvacina) {
 		this.idvacina = idvacina;
-	}
-
-	public int getAux() {
-		return aux;
-	}
-
-	public void setAux(int aux) {
-		this.aux = aux;
 	}
 
 	public String getSus() {
@@ -76,26 +71,26 @@ public class Carteira {
 	}
 
 	public int getQtdDoses() {
-		return qtdDoses;
+		return this.qtdDoses;
 	}
 
 	public void setQtdDoses(int qtdDoses) {
 		this.qtdDoses = qtdDoses;
 	}
 
-	public String getPrimeiraDose() {
+	public LocalDate getPrimeiraDose() {
 		return primeiraDose;
 	}
 
-	public void setPrimeiraDose(String primeiraDose) {
+	public void setPrimeiraDose(LocalDate primeiraDose) {
 		this.primeiraDose = primeiraDose;
 	}
 
-	public String getSegundaDose() {
+	public LocalDate getSegundaDose() {
 		return segundaDose;
 	}
 
-	public void setSegundaDose(String segundaDose) {
+	public void setSegundaDose(LocalDate segundaDose) {
 		this.segundaDose = segundaDose;
 	}
 
@@ -106,23 +101,59 @@ public class Carteira {
 	public void setIdcidadao(int idcidadao) {
 		this.idcidadao = idcidadao;
 	}
+	public String getPrimeiraDoseFormatado(){
+		return  formato.format(primeiraDose);
+	}
+	
+	public void setPrimeiraDose(String d){
+	primeiraDose = LocalDate.parse(d, formato);
+	}
+	public String getSegundaDoseFormatado(){
+		return formato.format(segundaDose);
+	}
+	public void setSegundaDose(String d){
+	segundaDose = LocalDate.parse(d, formato);
+	}
+	public void setResultPrimeiraDose() {
+	//primeiraDose = rs.getDate("dt_nascimento");
+	}
 
 	public void inserir() {
-		String sql = "INSERT INTO db_projeto.tb_carteira (idvacina, idcidadao, nomevacina, qtddoses,primeiradose, segundadose,nsus) VALUES (?,?,?, ?, ?,?,?)";
+		String sql = "INSERT INTO db_projeto.tb_carteira (idvacina, idcidadao, nomevacina, qtddoses,primeiradose, segundadose, nsus) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
 			PreparedStatement ps = c.prepareStatement(sql);
-			ps.setInt(1,aux1);
+			ps.setInt(1,idvacina);
 			ps.setInt(2, idcidadao);
 			ps.setString(3, vacina);
 			ps.setInt(4, qtdDoses);
-			ps.setString(5, primeiraDose);
-			ps.setString(6, segundaDose);
+			ps.setDate(5, java.sql.Date.valueOf(primeiraDose));
+			ps.setDate(6, java.sql.Date.valueOf(segundaDose));
 			ps.setString(7,sus);
 			ps.execute();
-			JOptionPane.showMessageDialog(null, "A Cateira de vacinação foi incluida no Nº SUS " + sus);
+			JOptionPane.showMessageDialog(null, "Carteira de vacinação cadastrada com sucesso!!");
 		} catch (Exception e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Cidadão informado já possui carteira de vacinação!");
+		}
+	}
+	public void inserirPrimeiraDos() {
+		String sql = "INSERT INTO db_projeto.tb_carteira (idvacina, idcidadao, nomevacina, qtddoses,primeiradose, nsus) VALUES (?, ?, ?, ?, ?, ?)";
+		ConnectionFactory factory = new ConnectionFactory();
+		try (Connection c = factory.obtemConexao()) {
+			PreparedStatement ps = c.prepareStatement(sql);
+			ps.setInt(1,idvacina);
+			ps.setInt(2, idcidadao);
+			ps.setString(3, vacina);
+			ps.setInt(4, qtdDoses);
+			ps.setDate(5, java.sql.Date.valueOf(primeiraDose));
+			//ps.setDate(6, java.sql.Date.valueOf(segundaDose));
+			ps.setString(6,sus);
+			ps.execute();
+			JOptionPane.showMessageDialog(null, "Primeira dose da vacinação cadastrada com sucesso!!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Não foi possivel cadastrar Primeira DOSE!!");
 		}
 	}
 
@@ -131,52 +162,60 @@ public class Carteira {
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
 			PreparedStatement ps = c.prepareStatement(sql);
-			System.out.println(primeiraDose);
-			ps.setInt(1,aux1);
+			ps.setInt(1, idvacina);
 			ps.setString(2, vacina);
 			ps.setInt(3, qtdDoses);
-			ps.setString(4, primeiraDose);
-			ps.setString(5, segundaDose);
-			ps.setInt(6, aux);
+			ps.setDate(4, java.sql.Date.valueOf(primeiraDose));
+			ps.setDate(5, java.sql.Date.valueOf(segundaDose));
+			ps.setInt(6, idcarteira);
 			ps.execute();
-			JOptionPane.showMessageDialog(null, "A Cateira de vacinação foi atualizada no Nº SUS " + sus);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void apagar() {
-		String sql = "DELETE FROM tb_vacina WHERE idvacina = ?";
+		String sql = "DELETE FROM tb_carteira WHERE idcarteira = ?";
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
 			PreparedStatement ps = c.prepareStatement(sql);
-			ps.setString(1, vacina);
+			ps.setInt(1, idcarteira);
 			ps.execute();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}JOptionPane.showMessageDialog(null, "Carteira de vacinação deletada com sucesso!");
 	}
 
-	public void listar() {
-		String sql = "SELECT nomevacina, qtddoses, primeiradose,segundadose FROM db_projeto.tb_carteira WHERE nsus = ?";
+	public void listar()throws SQLException, NullPointerException {
+		String sql = "SELECT nomevacina, qtddoses, primeiradose FROM db_projeto.tb_carteira WHERE idcidadao = ?";
+		String sql1 = "SELECT segundadose FROM db_projeto.tb_carteira WHERE idcidadao = ?";
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
 			PreparedStatement ps = c.prepareStatement(sql);
-			ps.setString(1, sus);
+			ps.setInt(1, idcidadao);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				this.vacina = rs.getString("nomevacina");
 				this.qtdDoses = rs.getInt("qtddoses");
-				this.primeiraDose = rs.getString("primeiradose");
-				this.segundaDose = rs.getString("segundadose");
-				
+				this.primeiraDose = rs.getDate("primeiradose").toLocalDate();
+			}if(qtdDoses == 2) {
+				PreparedStatement pss = c.prepareStatement(sql1);
+				pss.setInt(1, idcidadao);
+				ResultSet rss = pss.executeQuery();
+				//System.out.println(qtdDoses);
+				while (rss.next()) {
+				this.segundaDose = rss.getDate("segundadose").toLocalDate();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public int pesquisarCidadao() {
+
+
+	public int pesquisarCidadao()throws SQLException, NullPointerException {
 		String sql = "SELECT idcidadao  FROM db_projeto.tb_cidadao WHERE nsus =?";
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
@@ -185,7 +224,6 @@ public class Carteira {
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()){
 			idcidadao = rs.getInt("idcidadao");
-			this.idcidadao =(idcidadao);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -203,30 +241,28 @@ public class Carteira {
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()){
 			idvacina = rs.getInt("idvacina");
-			this.aux1 =(idvacina);
+			
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return this.aux1;
+		return this.idvacina;
 
 	}
-	public int pesquisarCarteira() {
-		String sql = "SELECT idcarteira  FROM db_projeto.tb_carteira WHERE =?";
+	public int pesquisarCarteira()throws SQLException, NullPointerException {
+		String sql = "SELECT idcarteira  FROM db_projeto.tb_carteira WHERE idcidadao =?";
 		ConnectionFactory factory = new ConnectionFactory();
 		try (Connection c = factory.obtemConexao()) {
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setInt(1,idcidadao);			
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()){
-			idvacina = rs.getInt("idvacina");
-			this.aux1 =(idvacina);
+			idcarteira = rs.getInt("idcarteira");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return this.aux1;
+		return this.idcarteira;
 
-	}
-	
+	}	
 }

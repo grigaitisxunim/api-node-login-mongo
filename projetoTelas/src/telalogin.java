@@ -53,8 +53,8 @@ public class telalogin {
 		frame.getContentPane().setLayout(null);
 		
 		JLabel lblEmail = new JLabel("Email");
-		lblEmail.setForeground(new Color(255, 255, 255));
-		lblEmail.setFont(new Font("Arial", Font.BOLD, 14));
+		lblEmail.setForeground(new Color(47, 79, 79));
+		lblEmail.setFont(new Font("Dialog", Font.BOLD, 14));
 		lblEmail.setBounds(110, 106, 69, 20);
 		frame.getContentPane().add(lblEmail);
 		
@@ -64,8 +64,8 @@ public class telalogin {
 		txtEmail.setColumns(10);
 		
 		JLabel lblSenha = new JLabel("Senha");
-		lblSenha.setForeground(new Color(255, 255, 255));
-		lblSenha.setFont(new Font("Arial", Font.BOLD, 14));
+		lblSenha.setForeground(new Color(47, 79, 79));
+		lblSenha.setFont(new Font("Dialog", Font.BOLD, 14));
 		lblSenha.setBounds(110, 156, 69, 20);
 		frame.getContentPane().add(lblSenha);
 		
@@ -75,19 +75,21 @@ public class telalogin {
 		textSenha.setColumns(10);
 		
 		JButton btnLogin = new JButton("Login");
-		btnLogin.setFont(new Font("Arial", Font.BOLD, 13));
+		btnLogin.setForeground(new Color(47, 79, 79));
+		btnLogin.setFont(new Font("Dialog", Font.BOLD, 14));
 		btnLogin.setBounds(135, 280, 115, 29);
 		frame.getContentPane().add(btnLogin);
 		
 		JButton btnCadastrar = new JButton("Cadastrar");
-		btnCadastrar.setFont(new Font("Arial", Font.BOLD, 13));
+		btnCadastrar.setForeground(new Color(47, 79, 79));
+		btnCadastrar.setFont(new Font("Dialog", Font.BOLD, 14));
 		btnCadastrar.setBounds(340, 280, 115, 29);
 		frame.getContentPane().add(btnCadastrar);
 		
 		JLabel lblNewLabel = new JLabel("New label");
 		lblNewLabel.setForeground(UIManager.getColor("TextPane.inactiveBackground"));
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\lu99-\\eclipse-workspace\\icons\\fundo-abstrato-colorido_23-2148807053.jpg"));
+		lblNewLabel.setIcon(new ImageIcon(telalogin.class.getResource("/icons/fundo.JPG")));
 		lblNewLabel.setBounds(0, 0, 612, 362);
 		frame.getContentPane().add(lblNewLabel);
 	}
